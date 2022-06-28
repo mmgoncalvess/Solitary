@@ -31,7 +31,6 @@ public class Game {
                 movements.addMovement(card, StackName.values()[stackIndex], cardIndex);
             }
         }
-        System.out.println("Hello!!!");
     }
 
     public boolean moveCard(Card card, StackName stackTarget, int index) {
@@ -149,5 +148,9 @@ public class Game {
         deck.next();
         deck.getCard(deck.getSize()-1).setCovered(false);
         movements.addMovement(deck.getCard(deck.getSize()-1), StackName.DECK, -1);
+    }
+
+    public ArrayList<Stack> getStacks() {
+        return stacks;
     }
 }
