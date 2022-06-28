@@ -110,8 +110,12 @@ public class Game {
             }
             index++;
         }
-        for (Suit suit: suits) {
-            if (suit == null) suit = allSuits.remove(0);
+
+        for (int i = 0; i < 4; i++) {
+            if (suits[i] == null) {
+                suits[i] = allSuits.get(0);
+                allSuits.remove(suits[i]);
+            }
         }
         return suits;
     }
