@@ -7,9 +7,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
@@ -67,65 +64,6 @@ class GameTest {
         game.initialDeal();
         boolean valueTwo = game.completeGame();
         Assertions.assertFalse(valueTwo);
-    }
-
-    @Test
-    void checkSuits() {
-        FinalStack stackTwo = (FinalStack) game.getStacks().get(8);
-        FinalStack stackThree = (FinalStack) game.getStacks().get(9);
-        FinalStack stackFour = (FinalStack) game.getStacks().get(10);
-        stackTwo.setCard(new Card(Rank.ACE, Suit.SPADE));
-        stackThree.setCard(new Card(Rank.ACE, Suit.CLUB));
-        stackTwo.setCard(new Card(Rank.TWO,Suit.SPADE));
-        stackFour.setCard(new Card(Rank.ACE, Suit.HEART));
-        Suit[] suits = game.checkSuits();
-        StringBuilder builder = new StringBuilder();
-        for (Suit item : suits) {
-            builder.append(item.getSuitChar());
-        }
-        String actualValue = builder.toString();
-        String expectedValue = "DSCH";
-        Assertions.assertEquals(actualValue, expectedValue);
-    }
-
-    @Test
-    void findCard() {
-        game.initialDeal();
-        game.next();
-        Deck deck = (Deck) game.getStacks().get(11);
-        Card expectedCardOne = deck.getCard(0);
-        Rank rank = expectedCardOne.getRank();
-        Suit suit = expectedCardOne.getSuit();
-        deck.next();
-        deck.next();
-        Card actualCardOne = game.findCard(rank, suit);
-
-        Card expectedCardTwo = game.getStacks().get(2).getCard(game.getStacks().get(2).getSize()-1);
-        Card expectedCardThree = game.getStacks().get(5).getCard(game.getStacks().get(5).getSize()-1);
-        Card expectedCardFour = game.getStacks().get(4).getCard(game.getStacks().get(4).getSize()-1);
-        Card actualCardTwo = game.findCard(expectedCardTwo.getRank(), expectedCardTwo.getSuit());
-        Card actualCardThree = game.findCard(expectedCardThree.getRank(), expectedCardThree.getSuit());
-        Card actualCardFour = game.findCard(expectedCardFour.getRank(), expectedCardFour.getSuit());
-
-        System.out.println("Expected: " + expectedCardOne + "  Actual: " + actualCardOne);
-        System.out.println("Expected: " + expectedCardTwo + "  Actual: " + actualCardTwo);
-        System.out.println("Expected: " + expectedCardThree + "  Actual: " + actualCardThree);
-        System.out.println("Expected: " + expectedCardFour + "  Actual: " + actualCardFour);
-
-        Assertions.assertEquals(expectedCardOne, actualCardOne);
-        Assertions.assertEquals(expectedCardTwo, actualCardTwo);
-        Assertions.assertEquals(expectedCardThree, actualCardThree);
-        Assertions.assertEquals(expectedCardFour, actualCardFour);
-    }
-
-    @Test
-    void fillRank() {
-        Suit[] suits = game.checkSuits();
-        assertNotEquals(13, game.getStacks().get(9).getSize());
-        for (Rank rank : Rank.values()) {
-            game.fillRank(rank, suits);
-        }
-        assertEquals(13, game.getStacks().get(9).getSize());
     }
 
     @Test
