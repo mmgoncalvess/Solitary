@@ -35,58 +35,57 @@ public class GraphicCard {
     }
 
     private void setUpCard() {
-
         cover.setOnMouseClicked(event -> {
             if (this.stackName.equals(StackName.DECK) && card.isCovered()) {
                 this.graphicGame.deckNext();
             }
         });
-
         AtomicBoolean releaseFlag = new AtomicBoolean(false);
-
         cardImage.setOnMousePressed(event -> {
-            if (event.isSecondaryButtonDown()) {
-                graphicGame.executeDoubleClick(this);
-                graphicGame.moveCards(null);
-                // double press
-            } else {
-                releaseFlag.set(true);
-                ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
-                startX = event.getSceneX() - image.getTranslateX();
-                startY = event.getSceneY() - image.getTranslateY();
-                image.toFront();
-                for (GraphicCard graphicCard : subGraphicCards) {
-                    graphicCard.startGroupMovement(event);
+            if (graphicGame.isEnableAction()) {
+                if (event.isSecondaryButtonDown()) {
+                    graphicGame.executeDoubleClick(this);
+                    graphicGame.moveCards(null);
+                    // secondary button press
+                } else {
+                    releaseFlag.set(true);
+                    ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
+                    startX = event.getSceneX() - image.getTranslateX();
+                    startY = event.getSceneY() - image.getTranslateY();
+                    image.toFront();
+                    for (GraphicCard graphicCard : subGraphicCards) {
+                        graphicCard.startGroupMovement(event);
+                    }
+                    // primary button press
                 }
-                // single press
             }
         });
 
         cardImage.setOnMouseDragged(event -> {
-            if (releaseFlag.get()) {
-                ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
-                image.setTranslateX(event.getSceneX() - startX);
-                image.setTranslateY(event.getSceneY() - startY);
-                for (GraphicCard graphicCard : subGraphicCards) {
-                    graphicCard.setGroupMovement(event);
+            if (graphicGame.isEnableAction()) {
+                if (releaseFlag.get()) {
+                    ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
+                    image.setTranslateX(event.getSceneX() - startX);
+                    image.setTranslateY(event.getSceneY() - startY);
+                    for (GraphicCard graphicCard : subGraphicCards) {
+                        graphicCard.setGroupMovement(event);
+                    }
                 }
             }
-
         });
 
         cardImage.setOnMouseReleased(event -> {
-            if (releaseFlag.get()) {
-                ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
-                StackName stackTarget = graphicGame.askToMoveCard(this);
-
-                for (GraphicCard graphicCard : subGraphicCards) {
-                    graphicGame.askToMoveCard(graphicCard, stackTarget);
-                    //graphicGame.moveCards(null);
+            if (graphicGame.isEnableAction()) {
+                if (releaseFlag.get()) {
+                    ArrayList<GraphicCard> subGraphicCards = getGraphicCards();
+                    StackName stackTarget = graphicGame.askToMoveCard(this);
+                    for (GraphicCard graphicCard : subGraphicCards) {
+                        graphicGame.askToMoveCard(graphicCard, stackTarget);
+                    }
+                    graphicGame.moveCards(null);
+                    releaseFlag.set(false);
                 }
-                graphicGame.moveCards(null);
-                releaseFlag.set(false);
             }
-
         });
     }
 

@@ -51,9 +51,6 @@ public class Piles {
         if (result) {
             stackSource.removeCard(card);
             movements.addMovement(card, getStackName(stackTarget), -1);
-            Card newCard = stackSource.getCard(index);
-            //move(newCard,stackTarget,index);
-
             return true;
         } else {
             movements.addMovement(card, getStackName(stackSource), getStackName(getStack(card)).equals(StackName.DECK) ? -1 : index);

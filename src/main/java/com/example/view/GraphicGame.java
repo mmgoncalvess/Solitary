@@ -6,6 +6,7 @@ import com.example.enums.StackName;
 import com.example.model.Card;
 import com.example.model.Movement;
 import javafx.animation.TranslateTransition;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import java.util.ArrayList;
@@ -16,10 +17,15 @@ public class GraphicGame {
     private final GraphicCardFactory graphicCardFactory;
     private final Duration duration = new Duration(50);
     private final Controller controller;
+    private final Button completeButton;
+    private final Button newGameButton;
+    private boolean enableAction = false;
 
-    public GraphicGame(Pane pane, Controller controller) {
+    public GraphicGame(Pane pane, Controller controller, Button completeButton, Button newGameButton) {
         this.graphicCardFactory = new GraphicCardFactory(pane, this);
         this.controller = controller;
+        this.completeButton = completeButton;
+        this.newGameButton = newGameButton;
         init();
     }
 
@@ -52,14 +58,21 @@ public class GraphicGame {
     }
 
     public void moveCards(Runnable runnable) {
+        enableAction = false;
+        newGameButton.setDisable(true);
+
         Movement movement = controller.getMovement();
         if (movement != null) System.out.println(movement);
         if (movement == null) {
+            enableAction = true;
+            if (controller.isSolved()) completeButton.setDisable(false);
+            newGameButton.setDisable(false);
             try {
                 runnable.run();
             } catch (NullPointerException e) {
                 //e.printStackTrace();
             }
+            if (checkFinal()) startAnimation();
             return;
         }
         Card card = movement.getCard();
@@ -227,5 +240,26 @@ public class GraphicGame {
 
     public ArrayList<ArrayList<GraphicCard>> getStacks() {
         return stacks;
+    }
+
+    public void startAnimation() {
+        try {
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Animation animation = new Animation(stacks);
+        animation.start();
+    }
+
+    public boolean isEnableAction() {
+        return enableAction;
+    }
+
+    public boolean checkFinal() {
+        for (int stackIndex = 7; stackIndex < 11; stackIndex++) {
+            if (stacks.get(stackIndex).size() < 13) return false;
+        }
+        return true;
     }
 }

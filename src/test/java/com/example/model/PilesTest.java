@@ -1,12 +1,12 @@
 package com.example.model;
 
 import com.example.enums.Rank;
+import com.example.enums.StackName;
 import com.example.enums.Suit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PilesTest {
@@ -21,22 +21,52 @@ class PilesTest {
 
     @AfterEach
     void tearDown() {
+        piles = null;
+        movements = null;
     }
 
     @Test
     void initialDeal() {
+        piles.initialDeal();
+        boolean result = true;
+        for (int stackIndex = 0; stackIndex < 7; stackIndex++) {
+            Card card = piles.getStacks().get(stackIndex).getCard(stackIndex);
+            if (card == null || card.isCovered()) result = false;
+        }
+        assertTrue(result);
     }
 
     @Test
     void move() {
+        Card cardOne = new Card(Rank.QUEEN, Suit.HEART);
+        Card cardTwo = new Card(Rank.KING, Suit.CLUB);
+        InitialStack initialStackOne = (InitialStack) piles.getStacks().get(0);
+        InitialStack initialStackTwo = (InitialStack) piles.getStacks().get(1);
+        assertFalse(initialStackOne.setCard(cardOne));
+        assertTrue(initialStackOne.setCard(cardTwo));
+        assertTrue(initialStackOne.setCard(cardOne));
+        cardTwo.setCovered(false);
+        assertTrue(piles.move(cardTwo, StackName.INITIAL_TWO, 0));
+        Card actualCard = initialStackTwo.getCard(0);
+        assertEquals(cardTwo, actualCard);
+        actualCard = initialStackTwo.getCard(1);
+        assertNull(actualCard);
     }
 
     @Test
     void isSolved() {
+        boolean initialValue = piles.isSolved();
+        assertTrue(initialValue);
+        piles.initialDeal();
+        boolean finalValue = piles.isSolved();
+        Assertions.assertFalse(finalValue);
     }
 
     @Test
     void completeGame() {
+        piles.initialDeal();
+        boolean valueTwo = piles.completeGame();
+        Assertions.assertFalse(valueTwo);
     }
 
     @Test
